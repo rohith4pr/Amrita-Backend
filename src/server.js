@@ -30,7 +30,7 @@ app.post('/api/add-blog', async (req, res) => {
 })
 
 app.post('/api/send-contact', async (req, res) => {
-    const user = {username: req.body.user, email: req.body.email, messages: req.body.messages};
+    const user = {username: req.body.name, email: req.body.email, messages: req.body.message};
     
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -44,14 +44,14 @@ app.post('/api/send-contact', async (req, res) => {
         from: user.email,
         to: 'akshaymohan99@gmail.com',
         subject: `Message sent by ${user.username}`,
-        text: user.messages
+        text: `${user.messages} \nRegards,\n${user.username} \n${user.email}`
       };
       
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
+          return res.status(200).json(error);
         } else {
-          console.log('Email sent: ' + info.response);
+          return res.status(200).json('Email sent: ' + info.response)
         }
       });
     
