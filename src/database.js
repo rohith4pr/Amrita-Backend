@@ -78,20 +78,31 @@ const getAllBlogs = async (res) =>{
     })
 }
 
+const getAllContributers = async (res) =>{
+    const pool = initDatabase();
+    pool.query(`SELECT blog_details.Author_id,count(*) as count,max(Blog_date) as time, First_name, Second_name FROM blog_details INNER JOIN user_details ON blog_details.Author_id = user_details.Username group by Author_id `,(err,result,fields) => {
+        if(err){
+            return res.status(200).json(err);
+        }
+        return res.status(200).json(result);
+       
+    })
+}
+
+
 const addNewBlog = async (username,title,content,picLink,res) =>{
     const pool = initDatabase();
     
-    pool.query(`INSERT INTO blog_details (Author_id, Blog_title, Blog_content, Blog_img) VALUES ('${username}','${title}','${content}','${picLink}')`, (err,result,fields) => {
+    pool.query(`INSERT INTO blog_details (Author_id, Blog_title, Blog_content, Blog_img) VALUES ('${username}','${title}','${content}','${picLink}');`, (err,result,fields) => {
         if(err){
             console.log(err);
             return res.status(200).json({});
             
         }
-        
         return res.status(200).json({"res": "newblogadded"});
         
     })
 }
 
 
-module.exports = { getAll,checkUserLogin , checkUserSignup, getAllBlogs, addNewBlog };
+module.exports = { getAll,checkUserLogin , checkUserSignup, getAllBlogs, addNewBlog, getAllContributers };

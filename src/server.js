@@ -63,5 +63,12 @@ app.get('/api/get-all-blogs', async (req, res) => {
     
 })
 
+app.get('/api/get-all-contributers', async (req, res) => {
+    
+  await database.getAllContributers(res);
+  
+})
+
+
 
 app.listen(8000, () => console.log('Listening on port 8000'));
