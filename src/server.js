@@ -1,12 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+
 const app = express();
 var nodemailer = require('nodemailer');
 app.use(bodyParser.json());
 const database = require("./database.js"); 
+const fUpload = require("express-fileupload");
 
-
+app.use(fUpload());
 
 app.get('/hello', (req,res) => res.send('Hello'));
 
@@ -19,10 +21,11 @@ app.post('/api/login-user-auth', async (req, res) => {
 app.post('/api/signup-user-auth', async (req, res) => {
     const user = {username: req.body.tempUser, password: req.body.tempPassword, firstname: req.body.tempUserFirstname, secondname : req.body.tempUserSecondname};
     await database.checkUserSignup(user.username,user.password,user.firstname,user.secondname,res);
-    
 })
 
 app.post('/api/add-blog', async (req, res) => {
+
+
     const user = {username: req.body.user, title: req.body.title, content: req.body.content,picLink: req.body.picLink,};
     
     await database.addNewBlog(user.username,user.title,user.content,user.picLink,res);
