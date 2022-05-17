@@ -78,6 +78,30 @@ const getAllBlogs = async (res) =>{
     })
 }
 
+const getOneBlogs = async (blogno,res) =>{
+    const pool = initDatabase();
+    pool.query(`SELECT * FROM blog_details WHERE id= ${blogno}`,(err,result,fields) => {
+        if(err){
+            return res.status(200).json({});
+        }
+        
+        return res.status(200).json(result);
+       
+    })
+}
+
+const getOneAuth = async (authId,res) =>{
+    const pool = initDatabase();
+    pool.query(`SELECT blog_details.Author_id,count(*) as count,max(Blog_date) as time, user_details.* FROM blog_details INNER JOIN user_details ON blog_details.Author_id = user_details.Username group by Author_id having blog_details.Author_id = '${authId}'`,(err,result,fields) => {
+        if(err){
+            return res.status(200).json({});
+        }
+        
+        return res.status(200).json(result);
+       
+    })
+}
+
 const getAllContributers = async (res) =>{
     const pool = initDatabase();
     pool.query(`SELECT blog_details.Author_id,count(*) as count,max(Blog_date) as time, First_name, Second_name FROM blog_details INNER JOIN user_details ON blog_details.Author_id = user_details.Username group by Author_id `,(err,result,fields) => {
@@ -105,4 +129,4 @@ const addNewBlog = async (username,title,content,picLink,res) =>{
 }
 
 
-module.exports = { getAll,checkUserLogin , checkUserSignup, getAllBlogs, addNewBlog, getAllContributers };
+module.exports = { getAll,checkUserLogin , checkUserSignup, getAllBlogs, addNewBlog, getAllContributers, getOneBlogs,getOneAuth };

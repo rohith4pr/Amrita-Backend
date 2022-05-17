@@ -57,6 +57,22 @@ app.post('/api/send-contact', async (req, res) => {
     
 })
 
+app.post('/api/get-one-blog', async (req, res) => {
+  const user = {blogno: req.body.currentBlog};
+  
+  await database.getOneBlogs(user.blogno,res);
+    
+  
+})
+
+app.post('/api/get-one-author', async (req, res) => {
+  const user = {authId: req.body.authorId};
+  
+  await database.getOneAuth(user.authId,res);
+    
+  
+})
+
 app.get('/api/get-all-blogs', async (req, res) => {
     
     await database.getAllBlogs(res);
