@@ -7,10 +7,32 @@ var nodemailer = require('nodemailer');
 app.use(bodyParser.json());
 const database = require("./database.js"); 
 const fUpload = require("express-fileupload");
-
+const proxy = "http://http://localhost:8000/";
 app.use(fUpload());
+const fs = require("fs");
+
+
 
 app.get('/hello', (req,res) => res.send('Hello'));
+
+app.get('/api/blog-images/:name', async (req, res) => {
+  
+      const imgName = req.params.name;
+      let dirName = __dirname.replaceAll("\\","/");
+      const img = dirName+"/media/"+imgName;
+
+      fs.readFile(img, function(err,content){
+        if(err){
+          return res.status(200).json(err);
+        }
+        else{
+          res.writeHead(200, { "Content-type" : "img/*" });
+          res.end(content);
+        }
+      })
+
+  
+})
 
 app.post('/api/login-user-auth', async (req, res) => {
     const user = {username: req.body.tempUser, password: req.body.tempPassword};
@@ -19,17 +41,32 @@ app.post('/api/login-user-auth', async (req, res) => {
 })
 
 app.post('/api/signup-user-auth', async (req, res) => {
-    const user = {username: req.body.tempUser, password: req.body.tempPassword, firstname: req.body.tempUserFirstname, secondname : req.body.tempUserSecondname};
-    await database.checkUserSignup(user.username,user.password,user.firstname,user.secondname,res);
+    const user = {username: req.body.tempUser, password: req.body.tempPassword, firstname: req.body.tempUserFirstname, secondname : req.body.tempUserSecondname, social : req.body.social};
+    await database.checkUserSignup(user.username,user.password,user.firstname,user.secondname,user.social,res);
 })
 
 app.post('/api/add-blog', async (req, res) => {
 
-
-    const user = {username: req.body.user, title: req.body.title, content: req.body.content,picLink: req.body.picLink,};
+    const user = {username: req.body.user, title: req.body.title, content: req.body.content,picLink: req.body.picLink};
     
     await database.addNewBlog(user.username,user.title,user.content,user.picLink,res);
     
+})
+
+app.post('/api/add-blog-pic', async (req, res) => {
+
+  let sampleFile =  req.files.file;
+  const date = new Date();
+  let dirName = __dirname.replaceAll("\\","/");
+  const fileName = date.getTime()+sampleFile.name;
+  let uploadPath = dirName+"/media/"+fileName;
+  sampleFile.mv(uploadPath, function(err){
+    if(err){
+      return res.status(200).json({});
+    }
+  })
+  return res.status(200).json({res : fileName});
+  
 })
 
 app.post('/api/send-contact', async (req, res) => {

@@ -45,8 +45,10 @@ const checkUserLogin = async (username,password,res) =>{
     })
 }
 
-const checkUserSignup = async (username,password,firstname,secondname,res) =>{
+const checkUserSignup = async (username,password,firstname,secondname,social,res) =>{
     const pool = initDatabase();
+    const sFinal = [social];
+    //console.log(sFinal);
     pool.query(`select Username from user_details where Username = '${username}'`, (err,result,fields) => {
         if(err){
             return res.status(400).json({"res": "null"});
@@ -58,6 +60,7 @@ const checkUserSignup = async (username,password,firstname,secondname,res) =>{
         else {
             pool.query(`INSERT INTO user_details(First_name, Second_name, Password, Username) VALUES ('${firstname}','${secondname}','${password}','${username}')` , (err,result,fields) => {
                 if(err){
+                    console.log(err);
                     return res.status(400).json({"res": "null"});
                 }
                 return res.status(200).json({"res": "newuseradded"});
