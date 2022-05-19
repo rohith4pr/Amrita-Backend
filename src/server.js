@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import path from 'path';
 
 
 const app = express();
@@ -14,6 +15,8 @@ const fs = require("fs");
 
 
 app.get('/hello', (req,res) => res.send('Hello'));
+
+// app.use(express.static(path.join(__dirname, '/build')));
 
 app.get('/api/blog-images/:name', async (req, res) => {
   
@@ -125,6 +128,8 @@ app.get('/api/get-all-contributers', async (req, res) => {
   
 })
 
-
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname + '/build/index.html'));
+// })
 
 app.listen(8000, () => console.log('Listening on port 8000'));
