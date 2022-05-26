@@ -73,6 +73,7 @@ const checkUserSignup = async (username,password,firstname,secondname,social,res
 const getAllBlogs = async (res) =>{
     const pool = initDatabase();
     pool.query(`SELECT * FROM blog_details WHERE 1`,(err,result,fields) => {
+        console.log(result);
         if(err){
             return res.status(200).json({});
         }
